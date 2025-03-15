@@ -1,0 +1,30 @@
+{
+	"id": "dorico",
+	"name": "dorico",
+	"shortname": "dorico",
+	"description": "dorico",
+	"version": "0.0.0",
+	"license": "MIT",
+	"repository": "git+https://github.com/kbhaines/companion-module-dorico.git",
+	"bugs": "https://github.com/kbhaines/companion-module-dorico/issues",
+	"maintainers": [
+		{
+			"name": "Kevin Haines"
+		}
+	],
+	"legacyIds": [],
+	"runtime": {
+		"type": "node18",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.2",
+		"entrypoint": "../main.js"
+	},
+	"manufacturer": "Generic",
+	"products": [
+		"Dorcio5"
+	],
+	"keywords": [
+		"Protocol",
+		"Dorico"
+	]
+}
