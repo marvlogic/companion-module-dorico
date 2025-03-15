@@ -27,10 +27,19 @@ class WebsocketInstance extends InstanceBase {
 			{ variableId: 'rhythmDots', name: 'Currently Selected dots' },
 			{ variableId: 'restMode', name: 'In rest-mode' },
 			{ variableId: 'inputMode', name: 'Note input mode' },
-			{ variableId: 'state', name: 'state' }
+			{ variableId: 'state', name: 'state' },
+			{ variableId: 'latches', name: 'latches' }
 		])
-		// this.log(`info`, JSON.stringify(presets))
 		this.setPresetDefinitions(presets)
+		this.setVariableValues({
+			latches: {
+				noteInputActive: false,
+				inPlayback: false,
+				isRecording: false,
+				clickEnabled: false,
+				insertActive: false,
+			}
+		})
 		this.setActionDefinitions
 	}
 
@@ -161,6 +170,12 @@ class WebsocketInstance extends InstanceBase {
 		} else if (msgValue.message == "status") {
 			this.log(`debug`, `Status update`)
 			const oldInputMode = this.getVariableValue('inputMode')
+			var latches = this.getVariableValue('latches')
+			var newLatches = Object.fromEntries(Object.keys(latches).map(
+				x => [x, msgValue[x] != undefined ? msgValue[x] : latches[x]]
+			))
+			this.log(`debug`, `Old latches: ${JSON.stringify(latches)}`)
+			this.log(`debug`, `New latches: ${JSON.stringify(newLatches)}`)
 			const newvars = {
 				'duration': msgValue.duration || "unk",
 				'rhythmDots': msgValue.rhythmDots || "unk",
@@ -168,10 +183,11 @@ class WebsocketInstance extends InstanceBase {
 				'restMode': msgValue.restMode || false,
 				'inputMode': msgValue.noteInputActive != undefined ? msgValue.noteInputActive : oldInputMode,
 				'state': msgValue,
+				'latches': newLatches
 			}
 			this.log(`debug`, `New variables ${JSON.stringify(newvars)}`)
 			this.setVariableValues(newvars)
-			this.checkFeedbacks('duration', 'stateUpdate')
+			this.checkFeedbacks('duration', 'stateUpdate', 'latchUpdate')
 		}
 
 		// this.subscriptions.forEach((subscription) => {
@@ -309,6 +325,36 @@ class WebsocketInstance extends InstanceBase {
 						state = state[feedback.options.variableId]
 					}
 					if (state) {
+						return {
+							color: feedback.options.fg,
+							bgcolor: feedback.options.bg
+						}
+					}
+					return {}
+				}
+			},
+			'latchUpdate': {
+				type: 'advanced',
+				name: 'Latched State Update',
+				options: [{
+					type: 'textinput',
+					label: 'Variable ID',
+					id: 'variableId',
+					default: 'inPlayback'
+				}, {
+					id: 'fg',
+					type: 'colorpicker',
+					label: 'Font colour',
+					default: 'rgb(210,210,210)'
+				}, {
+					id: 'bg',
+					type: 'colorpicker',
+					label: 'Background colour',
+					default: 'rgb(0,0,102)'
+				}],
+				callback: (feedback, ctx) => {
+					const val = this.getVariableValue('latches')[feedback.options.variableId]
+					if (val) {
 						return {
 							color: feedback.options.fg,
 							bgcolor: feedback.options.bg

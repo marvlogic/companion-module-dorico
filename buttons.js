@@ -119,8 +119,8 @@ function mkPresetArt(art) {
 }
 
 export const editFlags = {
-    'insertActive': 'Insert',
-    'noteInputActive': 'Note Input'
+    'insertActive': { text: 'Insert', cmd: "NoteInput.Mode" },
+    'noteInputActive': { text: 'Note Input', cmd: "NoteInput.Enter?Set=1" },
 }
 
 function mkPresetEdit(editFlag) {
@@ -129,8 +129,8 @@ function mkPresetEdit(editFlag) {
         category: 'Editing',
         name: "Editing",
         style: {
-            text: editFlags[editFlag],
-            size: "auto",
+            text: editFlags[editFlag].text,
+            size: "18",
             alignment: "center:center",
             color: 16777215,
             bgcolor: 0,
@@ -142,7 +142,7 @@ function mkPresetEdit(editFlag) {
         },
         feedbacks: [
             {
-                feedbackId: "stateUpdate",
+                feedbackId: "latchUpdate",
                 options: {
                     variableId: editFlag,
                     fg: 'rgb(210,210,210)',
@@ -156,7 +156,7 @@ function mkPresetEdit(editFlag) {
                     {
                         actionId: "send_command",
                         options: {
-                            data: `NoteInput.Insert`
+                            data: editFlags[editFlag].cmd
                         }
                     }
                 ],
@@ -216,7 +216,7 @@ function mkDynamicPreset(dyn) {
 
 function transportFeedback(vid, bgcolour) {
     return {
-        feedbackId: "stateUpdate",
+        feedbackId: "latchUpdate",
         options: {
             variableId: vid,
             fg: 'rgb(210,210,210)',
