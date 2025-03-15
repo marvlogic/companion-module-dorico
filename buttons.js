@@ -47,7 +47,7 @@ function mkPreset(duration) {
             {
                 down: [
                     {
-                        actionId: "send_command",
+                        actionId: "sendCommand",
                         options: {
                             data: `NoteInput.NoteValue?LogDuration=${duration}`
                         }
@@ -105,7 +105,7 @@ function mkPresetArt(art) {
             {
                 down: [
                     {
-                        actionId: "send_command",
+                        actionId: "sendCommand",
                         options: {
                             data: `NoteInput.SetArticulation?Value=${art}`
                         }
@@ -154,7 +154,7 @@ function mkPresetEdit(editFlag) {
             {
                 down: [
                     {
-                        actionId: "send_command",
+                        actionId: "sendCommand",
                         options: {
                             data: editFlags[editFlag].cmd
                         }
@@ -201,7 +201,7 @@ function mkDynamicPreset(dyn) {
             {
                 down: [
                     {
-                        actionId: "send_command",
+                        actionId: "sendCommand",
                         options: {
                             data: `NoteInput.CreateDynamic?Definition=${dyn}`
                         }
@@ -267,7 +267,7 @@ function mkTransportPreset(tpt) {
             {
                 down: [
                     {
-                        actionId: "send_command",
+                        actionId: "sendCommand",
                         options: {
                             data: transport[tpt].cmd
                         }

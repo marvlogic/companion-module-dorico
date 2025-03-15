@@ -368,7 +368,7 @@ class WebsocketInstance extends InstanceBase {
 
 	initActions() {
 		this.setActionDefinitions({
-			send_command: {
+			sendCommand: {
 				name: 'Send Dorico command',
 				options: [
 					{
