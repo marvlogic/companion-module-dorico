@@ -16,7 +16,7 @@ export const notes = {
     // 'kHemiDemiSemiQuaver': '𝅘𝅥𝅱',
 }
 
-function mkPreset(duration) {
+function mkNotePreset(duration) {
     return {
         type: "button",
         category: 'Notes',
@@ -25,7 +25,7 @@ function mkPreset(duration) {
             text: notes[duration],
             size: "auto",
             alignment: "center:center",
-            color: 16777215,
+            color: 'rgb(210,210,210)',
             bgcolor: 0,
             show_topbar: "default"
         },
@@ -83,7 +83,7 @@ function mkPresetArt(art) {
             text: articulations[art],
             size: "18",
             alignment: "center:center",
-            color: 16777215,
+            color: 'rgb(210,210,210)',
             bgcolor: 0,
             show_topbar: "default"
         },
@@ -132,7 +132,7 @@ function mkPresetEdit(editFlag) {
             text: editFlags[editFlag].text,
             size: "18",
             alignment: "center:center",
-            color: 16777215,
+            color: 'rgb(210,210,210)',
             bgcolor: 0,
             show_topbar: "default"
         },
@@ -187,7 +187,7 @@ function mkDynamicPreset(dyn) {
             text: dynamics[dyn],
             size: "18",
             alignment: "center:center",
-            color: 16777215,
+            color: 'rgb(210,210,210)',
             bgcolor: 0,
             show_topbar: "default"
         },
@@ -254,7 +254,7 @@ function mkTransportPreset(tpt) {
             text: tpt,
             size: "16",
             alignment: "center:center",
-            color: 16777215,
+            color: 'rgb(210,210,210)',
             bgcolor: 0,
             show_topbar: "default"
         },
@@ -280,11 +280,53 @@ function mkTransportPreset(tpt) {
     }
 }
 
+const navigation = {
+    'Up': '⬆️',
+    'Down': '⬇️',
+    'Left': '⬅️',
+    'Right': '➡️'
+}
+
+function mkNavigatePreset(nav) {
+    return {
+        type: "button",
+        category: 'Navigation',
+        name: "Navigation",
+        style: {
+            text: navigation[nav],
+            size: "auto",
+            alignment: "center:center",
+            color: 'rgb(210,210,210)',
+            bgcolor: 0,
+            show_topbar: "default"
+        },
+        options: {
+            rotaryActions: false,
+            stepAutoProgress: true
+        },
+        // feedbacks: [transport[tpt].feedback],
+        steps: [
+            {
+                down: [
+                    {
+                        actionId: "moveCursor",
+                        options: {
+                            direction: nav
+                        }
+                    }
+                ],
+                up: []
+
+            }
+        ]
+    }
+}
 
 export const presets = {
-    ...Object.fromEntries(Object.keys(notes).map(x => [x, mkPreset(x)])),
+    ...Object.fromEntries(Object.keys(notes).map(x => [x, mkNotePreset(x)])),
     ...Object.fromEntries(Object.keys(articulations).map(x => [x, mkPresetArt(x)])),
     ...Object.fromEntries(Object.keys(editFlags).map(x => [x, mkPresetEdit(x)])),
     ...Object.fromEntries(Object.keys(dynamics).map(x => [x, mkDynamicPreset(x)])),
     ...Object.fromEntries(Object.keys(transport).map(x => [x, mkTransportPreset(x)])),
+    ...Object.fromEntries(Object.keys(navigation).map(x => [x, mkNavigatePreset(x)])),
 }

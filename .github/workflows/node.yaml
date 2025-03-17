@@ -1,0 +1,55 @@
+name: Node CI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  test:
+    name: Package
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.18.1]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Prepare Environment
+        run: |
+          corepack enable
+          yarn install
+        env:
+          CI: true
+      - name: prettier
+        run: |
+          yarn prettier --check .
+      #- name: Test jest
+      #  run: |
+      #    yarn test
+      #  env:
+      #    CI: true
+      - name: Test package
+        run: |
+          yarn companion-module-build
+        env:
+          CI: true
+      - name: Package with zip
+        run: |
+          mv pkg companion-module-dorico
+          zip -r companion-module-dorico.zip companion-module-dorico
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: companion-module-dorico.zip
+      # - name: Save artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: module
+      #     path: ${{github.workspace}}/pkg.tgz

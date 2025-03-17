@@ -287,9 +287,9 @@ class WebsocketInstance extends InstanceBase {
 				callback: (feedback, ctx) => {
 					this.log(`info`, (this.getVariableValue('duration') == feedback.options.duration))
 					if (this.getVariableValue('duration') == feedback.options.duration) {
-						const dots = this.getVariableValue('rhythmDots') > 0 ? '.' : ''
+						const dots = ['', '.', '..']
 						return {
-							text: `${notes[feedback.options.duration]}${dots}`,
+							text: `${notes[feedback.options.duration]}${dots[this.getVariableValue('rhythmDots')]}`,
 							color: feedback.options.fg,
 							bgcolor: feedback.options.bg
 						}
@@ -373,7 +373,7 @@ class WebsocketInstance extends InstanceBase {
 				options: [
 					{
 						type: 'textinput',
-						label: 'data',
+						label: 'Command',
 						id: 'data',
 						default: '',
 						useVariables: true,
@@ -383,6 +383,38 @@ class WebsocketInstance extends InstanceBase {
 					const value = await context.parseVariablesInString(action.options.data)
 					if (this.config.debug_messages) {
 						this.log('debug', `Message sent: ${value}`)
+					}
+					const msg = {
+						message: "command",
+						sessionToken: this.sessionToken,
+						command: value
+					}
+					this.ws.send(JSON.stringify(msg))
+					this.log('debug', `Message sent: ${msg}`)
+				},
+			},
+			moveCursor: {
+				name: 'Move the edit or selection cursor',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'direction',
+						choices: [
+							{ id: 'Up', label: 'Up' },
+							{ id: 'Down', label: 'Down' },
+							{ id: 'Left', label: 'Left' },
+							{ id: 'Right', label: 'Right' }
+						],
+						default: 'up',
+					},
+				],
+				callback: async (action, context) => {
+					var value
+					if (this.getVariableValue('latches').noteInputActive) {
+						value = `NoteInput.Move${action.options.direction}`
+					} else {
+						value = `EventEdit.Navigate${action.options.direction}`
 					}
 					const msg = {
 						message: "command",
