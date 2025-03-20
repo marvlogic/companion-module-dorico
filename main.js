@@ -30,7 +30,7 @@ class WebsocketInstance extends InstanceBase {
 			{ variableId: 'state', name: 'state' },
 			{ variableId: 'latches', name: 'latches' }
 		])
-		this.setPresetDefinitions(presets)
+		this.setPresetDefinitions(presets(config))
 		this.setVariableValues({
 			latches: {
 				noteInputActive: false,
@@ -118,7 +118,7 @@ class WebsocketInstance extends InstanceBase {
 
 		this.ws.on('open', () => {
 			this.updateStatus(InstanceStatus.Ok)
-			this.log('debug', `Connection opened`)
+			this.log('info', `Connection opened`)
 			// if (this.config.reset_variables) {
 			// 	this.updateVariables()
 			// }
@@ -132,7 +132,7 @@ class WebsocketInstance extends InstanceBase {
 		})
 		this.ws.on('close', (code) => {
 			this.sessionToken = null
-			this.log('debug', `Connection closed with code ${code}`)
+			this.log('info', `Connection closed with code ${code}`)
 			this.updateStatus(InstanceStatus.Disconnected, `Connection closed with code ${code}`)
 			this.maybeReconnect()
 		})
@@ -158,7 +158,9 @@ class WebsocketInstance extends InstanceBase {
 		if (this.sessionToken == null) {
 			try {
 				this.sessionToken = msgValue.sessionToken
-				this.log(`debug`, `Setting sesssion token: ${this.sessionToken}`)
+				if (this.config.debug_messages) {
+					this.log(`debug`, `Setting sesssion token: ${this.sessionToken}`)
+				}
 				const accept = {
 					message: "acceptsessiontoken",
 					sessionToken: this.sessionToken
@@ -168,14 +170,18 @@ class WebsocketInstance extends InstanceBase {
 				this.log(`error`, `Expecting handshake response, got ${msgValue}`)
 			}
 		} else if (msgValue.message == "status") {
-			this.log(`debug`, `Status update`)
+			if (this.config.debug_messages) {
+				this.log(`debug`, `Status update`)
+			}
 			const oldInputMode = this.getVariableValue('inputMode')
 			var latches = this.getVariableValue('latches')
 			var newLatches = Object.fromEntries(Object.keys(latches).map(
 				x => [x, msgValue[x] != undefined ? msgValue[x] : latches[x]]
 			))
-			this.log(`debug`, `Old latches: ${JSON.stringify(latches)}`)
-			this.log(`debug`, `New latches: ${JSON.stringify(newLatches)}`)
+			if (this.config.debug_messages) {
+				this.log(`debug`, `Old latches: ${JSON.stringify(latches)}`)
+				this.log(`debug`, `New latches: ${JSON.stringify(newLatches)}`)
+			}
 			const newvars = {
 				'duration': msgValue.duration || "unk",
 				'rhythmDots': msgValue.rhythmDots || "unk",
@@ -185,7 +191,9 @@ class WebsocketInstance extends InstanceBase {
 				'state': msgValue,
 				'latches': newLatches
 			}
-			this.log(`debug`, `New variables ${JSON.stringify(newvars)}`)
+			if (this.config.debug_messages) {
+				this.log(`debug`, `New variables ${JSON.stringify(newvars)}`)
+			}
 			this.setVariableValues(newvars)
 			this.checkFeedbacks('duration', 'stateUpdate', 'latchUpdate')
 		}
@@ -209,21 +217,54 @@ class WebsocketInstance extends InstanceBase {
 
 	getConfigFields() {
 		return [
-			{
-				type: 'static-text',
-				id: 'info',
-				width: 12,
-				label: 'Information',
-				value:
-					"<strong>PLEASE READ THIS!</strong> Generic modules is only for use with custom applications. If you use this module to control a device or software on the market that more than you are using, <strong>PLEASE let us know</strong> about this software, so we can make a proper module for it. If we already support this and you use this to trigger a feature our module doesn't support, please let us know. We want companion to be as easy as possible to use for anyone.",
-			},
+			// {
+			// type: 'static-text',
+			// id: 'info',
+			// width: 12,
+			// label: 'Information',
+			// value:
+			// "",
+			// },
 			{
 				type: 'textinput',
 				id: 'url',
-				label: 'Target URL',
-				tooltip: 'The URL of the WebSocket server (ws[s]://domain[:port][/path])',
+				label: 'Dorico URL',
+				tooltip: 'The URL of the Dorico WebSocket server (ws[s]://domain[:port][/path])',
 				width: 12,
 				regex: '/' + this.wsRegex + '/',
+				default: 'ws://127.0.0.1:4560'
+			},
+			{
+				type: 'colorpicker',
+				id: 'defaultColour',
+				label: 'Default foreground clour',
+				tooltip: 'Default colour for button foreground/text',
+				width: 6,
+				default: 'rgb(0,0,0)'
+			},
+			{
+				type: 'colorpicker',
+				id: 'defaultBgColour',
+				label: 'Default background clour',
+				tooltip: 'Default colour for button background',
+				width: 6,
+				default: 'rgb(163, 149, 119)'
+			},
+			{
+				type: 'colorpicker',
+				id: 'defaultSelectedColour',
+				label: 'Default foreground selected colour',
+				tooltip: 'Default colour for selected button foreground/text',
+				width: 6,
+				default: 'rgb(255,255,255)'
+			},
+			{
+				type: 'colorpicker',
+				id: 'defaultSelectedBgColour',
+				label: 'Default background selected colour',
+				tooltip: 'Default colour for selected button background',
+				width: 6,
+				default: 'rgb(0, 0, 102)'
 			},
 			{
 				type: 'checkbox',
@@ -235,17 +276,10 @@ class WebsocketInstance extends InstanceBase {
 			},
 			{
 				type: 'checkbox',
-				id: 'append_new_line',
-				label: 'Append new line',
-				tooltip: 'Append new line (\\r\\n) to commands',
-				width: 6,
-				default: true,
-			},
-			{
-				type: 'checkbox',
 				id: 'debug_messages',
 				label: 'Debug messages',
 				tooltip: 'Log incomming and outcomming messages',
+				default: false,
 				width: 6,
 			},
 			{
@@ -285,9 +319,11 @@ class WebsocketInstance extends InstanceBase {
 				// 	color: 0xFFFFFF
 				// },
 				callback: (feedback, ctx) => {
-					this.log(`info`, (this.getVariableValue('duration') == feedback.options.duration))
+					if (this.config.debug_messages) {
+						this.log(`debug`, (this.getVariableValue('duration') == feedback.options.duration))
+					}
 					if (this.getVariableValue('duration') == feedback.options.duration) {
-						const dots = ['', '.', '..']
+						const dots = ['', '.', '..', '...', '....']
 						return {
 							text: `${notes[feedback.options.duration]}${dots[this.getVariableValue('rhythmDots')]}`,
 							color: feedback.options.fg,
@@ -381,16 +417,15 @@ class WebsocketInstance extends InstanceBase {
 				],
 				callback: async (action, context) => {
 					const value = await context.parseVariablesInString(action.options.data)
-					if (this.config.debug_messages) {
-						this.log('debug', `Message sent: ${value}`)
-					}
 					const msg = {
 						message: "command",
 						sessionToken: this.sessionToken,
 						command: value
 					}
 					this.ws.send(JSON.stringify(msg))
-					this.log('debug', `Message sent: ${msg}`)
+					if (this.config.debug_messages) {
+						this.log('debug', `Message sent: ${value}`)
+					}
 				},
 			},
 			moveCursor: {
@@ -422,7 +457,9 @@ class WebsocketInstance extends InstanceBase {
 						command: value
 					}
 					this.ws.send(JSON.stringify(msg))
-					this.log('debug', `Message sent: ${msg}`)
+					if (this.config.debug_messages) {
+						this.log('debug', `Message sent: ${value}`)
+					}
 				},
 			},
 		})

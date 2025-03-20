@@ -19,9 +19,9 @@
 		"apiVersion": "0.0.2",
 		"entrypoint": "../main.js"
 	},
-	"manufacturer": "Generic",
+	"manufacturer": "Steinberg",
 	"products": [
-		"Dorcio5"
+		"Dorico5"
 	],
 	"keywords": [
 		"Protocol",

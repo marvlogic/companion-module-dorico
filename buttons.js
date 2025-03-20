@@ -16,7 +16,7 @@ export const notes = {
     // 'kHemiDemiSemiQuaver': '𝅘𝅥𝅱',
 }
 
-function mkNotePreset(duration) {
+function mkNotePreset(config, duration) {
     return {
         type: "button",
         category: 'Notes',
@@ -25,8 +25,8 @@ function mkNotePreset(duration) {
             text: notes[duration],
             size: "auto",
             alignment: "center:center",
-            color: 'rgb(210,210,210)',
-            bgcolor: 0,
+            color: config.defaultColour,
+            bgcolor: config.defaultBgColour,
             show_topbar: "default"
         },
         options: {
@@ -38,8 +38,8 @@ function mkNotePreset(duration) {
                 feedbackId: "duration",
                 options: {
                     duration: duration,
-                    fg: 'rgb(210,210,210)',
-                    bg: 'rgb(0,0,102)'
+                    fg: config.defaultSelectedColour,
+                    bg: config.defaultSelectedBgColour,
                 }
             }
         ],
@@ -74,17 +74,17 @@ export const articulations = {
     // 'kStaccatissimo': '\''
 }
 
-function mkPresetArt(art) {
+function mkArticulationPreset(config, art) {
     return {
         type: "button",
         category: 'Articulations',
         name: "Articulation",
         style: {
             text: articulations[art],
-            size: "18",
+            size: "auto",
             alignment: "center:center",
-            color: 'rgb(210,210,210)',
-            bgcolor: 0,
+            color: config.defaultColour,
+            bgcolor: config.defaultBgColour,
             show_topbar: "default"
         },
         options: {
@@ -96,8 +96,8 @@ function mkPresetArt(art) {
                 feedbackId: "stateUpdate",
                 options: {
                     variableId: `articulation${art.substring(1)}`,
-                    fg: 'rgb(210,210,210)',
-                    bg: 'rgb(0,0,102)'
+                    fg: config.defaultSelectedColour,
+                    bg: config.defaultSelectedBgColour,
                 }
             }
         ],
@@ -123,7 +123,7 @@ export const editFlags = {
     'noteInputActive': { text: 'Note Input', cmd: "NoteInput.Enter?Set=1" },
 }
 
-function mkPresetEdit(editFlag) {
+function mkEditPreset(config, editFlag) {
     return {
         type: "button",
         category: 'Editing',
@@ -132,8 +132,8 @@ function mkPresetEdit(editFlag) {
             text: editFlags[editFlag].text,
             size: "18",
             alignment: "center:center",
-            color: 'rgb(210,210,210)',
-            bgcolor: 0,
+            color: config.defaultColour,
+            bgcolor: config.defaultBgColour,
             show_topbar: "default"
         },
         options: {
@@ -145,8 +145,8 @@ function mkPresetEdit(editFlag) {
                 feedbackId: "latchUpdate",
                 options: {
                     variableId: editFlag,
-                    fg: 'rgb(210,210,210)',
-                    bg: 'rgb(0,0,102)'
+                    fg: config.defaultSelectedColour,
+                    bg: config.defaultSelectedBgColour,
                 }
             }
         ],
@@ -178,7 +178,7 @@ export const dynamics = {
     'fff': 'fff',
 }
 
-function mkDynamicPreset(dyn) {
+function mkDynamicPreset(config, dyn) {
     return {
         type: "button",
         category: 'Dynamics',
@@ -187,8 +187,8 @@ function mkDynamicPreset(dyn) {
             text: dynamics[dyn],
             size: "18",
             alignment: "center:center",
-            color: 'rgb(210,210,210)',
-            bgcolor: 0,
+            color: config.defaultColour,
+            bgcolor: config.defaultBgColour,
             show_topbar: "default"
         },
         options: {
@@ -226,11 +226,11 @@ function transportFeedback(vid, bgcolour) {
 }
 
 export const transport = {
-    '\u{23f5}\nSelection': {
+    '\u{21ba}\u{23f5}\n': {
         cmd: 'Play.StartOrStop?PlayFromLocation=kSelection',
         feedback: transportFeedback('inPlayback', 'rgb(0,150,0)')
     },
-    '\u{23f5}': {
+    '\u{23ef}': {
         cmd: 'Play.StartOrStop?Set=true',
         feedback: transportFeedback('inPlayback', 'rgb(0,150,0)')
     },
@@ -245,17 +245,17 @@ export const transport = {
     },
 }
 
-function mkTransportPreset(tpt) {
+function mkTransportPreset(config, tpt) {
     return {
         type: "button",
         category: 'Transport',
         name: "Transport",
         style: {
             text: tpt,
-            size: "16",
+            size: "auto",
             alignment: "center:center",
-            color: 'rgb(210,210,210)',
-            bgcolor: 0,
+            color: config.defaultColour,
+            bgcolor: config.defaultBgColour,
             show_topbar: "default"
         },
         options: {
@@ -287,7 +287,7 @@ const navigation = {
     'Right': '➡️'
 }
 
-function mkNavigatePreset(nav) {
+function mkNavigatePreset(config, nav) {
     return {
         type: "button",
         category: 'Navigation',
@@ -296,8 +296,8 @@ function mkNavigatePreset(nav) {
             text: navigation[nav],
             size: "auto",
             alignment: "center:center",
-            color: 'rgb(210,210,210)',
-            bgcolor: 0,
+            color: config.defaultColour,
+            bgcolor: config.defaultBgColour,
             show_topbar: "default"
         },
         options: {
@@ -322,11 +322,14 @@ function mkNavigatePreset(nav) {
     }
 }
 
-export const presets = {
-    ...Object.fromEntries(Object.keys(notes).map(x => [x, mkNotePreset(x)])),
-    ...Object.fromEntries(Object.keys(articulations).map(x => [x, mkPresetArt(x)])),
-    ...Object.fromEntries(Object.keys(editFlags).map(x => [x, mkPresetEdit(x)])),
-    ...Object.fromEntries(Object.keys(dynamics).map(x => [x, mkDynamicPreset(x)])),
-    ...Object.fromEntries(Object.keys(transport).map(x => [x, mkTransportPreset(x)])),
-    ...Object.fromEntries(Object.keys(navigation).map(x => [x, mkNavigatePreset(x)])),
+
+export function presets(config) {
+    return {
+        ...Object.fromEntries(Object.keys(notes).map(x => [x, mkNotePreset(config, x)])),
+        ...Object.fromEntries(Object.keys(articulations).map(x => [x, mkArticulationPreset(config, x)])),
+        ...Object.fromEntries(Object.keys(editFlags).map(x => [x, mkEditPreset(config, x)])),
+        ...Object.fromEntries(Object.keys(dynamics).map(x => [x, mkDynamicPreset(config, x)])),
+        ...Object.fromEntries(Object.keys(transport).map(x => [x, mkTransportPreset(config, x)])),
+        ...Object.fromEntries(Object.keys(navigation).map(x => [x, mkNavigatePreset(config, x)])),
+    }
 }

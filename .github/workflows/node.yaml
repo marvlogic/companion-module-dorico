@@ -2,11 +2,11 @@ name: Node CI
 
 on:
   push:
-    # tags:
-    #   - "v*"
+    tags:
+      - "v*"
 
 jobs:
-  test:
+  release:
     permissions:
       contents: write
     name: Package
