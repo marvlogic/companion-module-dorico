@@ -4,6 +4,7 @@ export const notes = {
     'kMinim': '\u{1d15e}',
     'kCrotchet': '\u{1d15f}',
     'kQuaver': '\u{1d160}',
+    // 'kQuaver': '\u{266a}',
     'kSemiQuaver': '\u{1d161}',
     'kDemiSemiQuaver': '\u{1d162}',
     'kHemiDemiSemiQuaver': '\u{1d163}',
@@ -61,16 +62,14 @@ function mkNotePreset(config, duration) {
 }
 
 export const articulations = {
-    // 'kStaccato': '𝅼',
-    // 'kAccent': '𝅻',
-    // 'kMarcato': '𝅿',
-    // 'kTenuto': '',
-    // 'kStaccatissimo': ''
-    'kStaccato': '\u{1d17c}',
-    'kAccent': '>',
+    'kStaccato': '\u{1d160}\u{1d17c}',
+    // 'kAccent': '\u{1d160}\u{0302}',
+    'kAccent': '\u{1d160}\u{1D17B}',
     // 'kAccent': '\u{1d17b}',
-    'kMarcato': '𝅿',
-    'kTenuto': '_',
+    // 'kMarcato': '𝅿',
+    'kMarcato': '\u{1d160}\u{1D17F}',
+    'kTenuto': '\u{1d160}\u{1D17D}',
+    // 'kTenuto': '_',
     // 'kStaccatissimo': '\''
 }
 
@@ -168,14 +167,14 @@ function mkEditPreset(config, editFlag) {
 }
 
 export const dynamics = {
-    'ppp': 'ppp',
-    'pp': 'pp',
-    'p': 'p',
-    'mp': 'mp',
-    'mf': 'mf',
-    'f': 'f',
-    'ff': 'ff',
-    'fff': 'fff',
+    'ppp': '𝆏𝆏𝆏',
+    'pp': '𝆏𝆏',
+    'p': '𝆏',
+    'mp': '𝆐𝆏',
+    'mf': '𝆐𝆑',
+    'f': '𝆑',
+    'ff': '𝆑𝆑',
+    'fff': '𝆑𝆑𝆑',
 }
 
 function mkDynamicPreset(config, dyn) {
@@ -185,7 +184,7 @@ function mkDynamicPreset(config, dyn) {
         name: "Dynamics",
         style: {
             text: dynamics[dyn],
-            size: "18",
+            size: "auto",
             alignment: "center:center",
             color: config.defaultColour,
             bgcolor: config.defaultBgColour,

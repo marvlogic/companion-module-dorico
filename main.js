@@ -248,7 +248,7 @@ class WebsocketInstance extends InstanceBase {
 				label: 'Default background clour',
 				tooltip: 'Default colour for button background',
 				width: 6,
-				default: 'rgb(163, 149, 119)'
+				default: 'rgb(131, 119, 96)'
 			},
 			{
 				type: 'colorpicker',

@@ -5,7 +5,7 @@
 ## Installation
 
 1. Create a top-level `companion-modules` folder
-1. Download the archive zip file from the releases page
+1. Download the archive zip file from the [releases](https://github.com/marvlogic/companion-module-dorico/releases) page
 1. Unzip the file into the `companion-modules` folder you created 
 
 After this your folder structure should look like:
@@ -49,8 +49,7 @@ The module comes with a (limited) selection of preset buttons for:
 More presets will be added as time allows. See below if you wish to add your own
 command buttons.
 
-
-Most of these buttons are self-explanatory, a few have special behaviours:
+Most of these buttons are self-explanatory, but a few have special behaviours:
 
 * Note-Input button will enter/exit note input mode in Dorico, and toggle its
 background on/off accordingly. 
@@ -66,6 +65,8 @@ some reason (TBD)!
 
 
 ## Extending with custom commands
+
+(Musical notation font: https://www.unicode.org/charts/PDF/U1D100.pdf)
 
 You can add custom buttons and send bespoke Dorico commands. You need to know
 the Dorico command ID, which can be found by looking in Dorico's
@@ -96,7 +97,10 @@ These are mainly used by the preset buttons, but you could extend functionality
 by using them if you wish.
 
 * Duration-selected - change the colours of the button based on the selected note duration
-* Latched-state-update - change colours of the button according to the state of `Variable ID`:
+
+* Latched-state-update - change colours of the button according to the (boolean)
+  state of `Variable ID`:
+
     - noteInputActive
     - inPlayback
     - isRecording
@@ -130,6 +134,6 @@ buttons as long as you keep the shift-button held down.
 ### Note Input
 
 In a similar way, you can jump to another page when the 'Note Input' button is
-selected (just don't define the 'release action'). If you also have the 'Note
-Input' button on the target page then you can have that button return to the
-main page when it is pressed.
+selected (don't define the 'release action'). If you also have another 'Note
+Input' button on the target page, so you can have that button return to the main
+page when it is pressed.
