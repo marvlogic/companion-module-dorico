@@ -3,7 +3,7 @@
 	"name": "dorico",
 	"shortname": "dorico",
 	"description": "dorico",
-	"version": "0.9.1",
+	"version": "0.9.2",
 	"license": "MIT",
 	"repository": "git+https://github.com/kbhaines/companion-module-dorico.git",
 	"bugs": "https://github.com/kbhaines/companion-module-dorico/issues",
