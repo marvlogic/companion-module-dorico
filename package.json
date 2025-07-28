@@ -1,6 +1,6 @@
 {
 	"name": "companion-module-dorico",
-	"version": "0.0.1",
+	"version": "0.9.2",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
