@@ -45,7 +45,7 @@ jobs:
       - name: Package with tgz
         run: |
           mv pkg companion-module-dorico
-          tar zcf companion-module-dorico.tar.gz ./
+          tar zcf companion-module-dorico.tar.gz companion-module-dorico
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
