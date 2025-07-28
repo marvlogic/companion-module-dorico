@@ -3,7 +3,7 @@
 	"name": "dorico",
 	"shortname": "dorico",
 	"description": "dorico",
-	"version": "0.0.0",
+	"version": "0.9.1",
 	"license": "MIT",
 	"repository": "git+https://github.com/kbhaines/companion-module-dorico.git",
 	"bugs": "https://github.com/kbhaines/companion-module-dorico/issues",
@@ -19,9 +19,9 @@
 		"apiVersion": "0.0.2",
 		"entrypoint": "../main.js"
 	},
-	"manufacturer": "Steinberg",
+	"manufacturer": "MarvLogic",
 	"products": [
-		"Dorico5"
+		"Dorico-Module"
 	],
 	"keywords": [
 		"Protocol",

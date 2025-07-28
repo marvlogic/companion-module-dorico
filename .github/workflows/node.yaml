@@ -42,14 +42,14 @@ jobs:
           yarn companion-module-build
         env:
           CI: true
-      - name: Package with zip
+      - name: Package with tgz
         run: |
           mv pkg companion-module-dorico
-          zip -r companion-module-dorico.zip companion-module-dorico
+          tar zcf companion-module-dorico.tar.gz ./
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: companion-module-dorico.zip
+          files: companion-module-dorico.tar.gz
       # - name: Save artifact
       #   uses: actions/upload-artifact@v4
       #   with:
