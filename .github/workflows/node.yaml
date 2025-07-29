@@ -45,11 +45,11 @@ jobs:
       - name: Package with tgz
         run: |
           mv pkg companion-module-dorico
-          tar zcf companion-module-dorico.tar.gz companion-module-dorico
+          tar zcf companion-module-dorico.tgz companion-module-dorico
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: companion-module-dorico.tar.gz
+          files: companion-module-dorico.tgz
       # - name: Save artifact
       #   uses: actions/upload-artifact@v4
       #   with:
